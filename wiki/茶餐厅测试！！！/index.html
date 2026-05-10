@@ -17,7 +17,7 @@
 <meta property="og:description" content="​        前些天在一大佬的神秘企鹅群里看到了这么一道题，是由群主由CSAPP Homework 2.89 改编而来，看了一下感觉还蛮有意思的，于是简单的做了一下。 题目如下：        我们在一个int类型为32位补码表示的机器上运行程序。float类型的值使用32位的IEEE格式，而double类型使用64位的IEEE格式。我们产生随机整数x , y, z,并把它们转换为double">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-09T04:46:24.000Z">
-<meta property="article:modified_time" content="2026-05-10T05:10:05.496Z">
+<meta property="article:modified_time" content="2026-05-10T05:12:40.575Z">
 <meta property="article:author" content="AREPO">
 <meta name="twitter:card" content="summary">
     
@@ -96,7 +96,7 @@
             <div id="search-form-wrap">
 
     <form class="search-form">
-        <input type="text" class="ins-search-input search-form-input" placeholder="Rechercher" />
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
         <button type="submit" class="search-form-submit"></button>
     </form>
     <div class="ins-search">
@@ -115,9 +115,9 @@
 (function (window) {
     var INSIGHT_CONFIG = {
         TRANSLATION: {
-            POSTS: 'Articles',
+            POSTS: 'Posts',
             PAGES: 'Pages',
-            CATEGORIES: 'Catégories',
+            CATEGORIES: 'Categories',
             TAGS: 'Tags',
             UNTITLED: '(Untitled)',
         },
@@ -151,7 +151,7 @@
                 <td>
                     
     <div class="search-form">
-        <input type="text" class="ins-search-input search-form-input" placeholder="Rechercher" />
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
     </div>
 
                 </td>
@@ -234,8 +234,8 @@
 <p>​        我们首先来看A选项，我们能够容易发现，当x，y均为0时，0.0 &#x2F; 0.0 &#x3D; NaN，而在IEEE 754标准中，NaN !&#x3D; NaN，因此A表达式值可能为0。</p>
 <p>​        接下来是B选项，我们可以将x的值赋为int整型上限，而将y赋值为负数，这样x - y的值便会溢出而不会正常表示，然而dx &#x2F; dy却不会受此影响，因此B表达式可能为0。</p>
 <p>​        再来看D选项，我们能够注意到，32位double类型乘以32位double类型最大需要62位来储存，然而，double类型的尾数为53位，多于尾数的部分会被舍弃，从而导致数值不准确。因此D表达式的值同样不是总为1。</p>
-<p>​        然后是C表达式，事实上，在一开始，我认为该表达式应该是总为1。然而群主却表示这四个表达式均不是总是为1。这就变得有意思了起来。我们注意到，题目表示在32位机器上，因此x，y，z均为32位有符号整型。因此其相加结果最多需要33位来进行储存。而double类型的64位尾数精度位53，是远大于33的，那么按理说该答案应该是总是为1。那么为何出题者会表示改为错误呢？我注意到了题目中的表示：“该机器float类型采用32位”。如果是使用float的话，那么该表达式的确可能不总是为1。32位的float浮点类型尾数精度为24，当我们将x，y, z取值为2^24(16777216) 和 1以及-16777216时，fx &#x3D; 16777216.0，fy &#x3D; 1.0，fz &#x3D; -16777216.0。<br>这时，左侧表达式fx + fy 就需要使用25位来储存，然而float只有24位，低位的1.0便会被舍入，结果仍然会是16777216.0，再加上fz时，结果便会为0；而右侧，fy + fz 结果会为-16777215.0，这是能够正确储存的，再加上fx，结果为1.0。两侧结果不相等，表达式结果为0。</p>
-<p>​        因此，如果容器为64位double时，答案应该是A，B，D不总是为1，而C应该是总是为1的。</p>
+<p>​        然后是C表达式，事实上，在一开始，我认为该表达式应该是总为1。然而群主却表示这四个表达式均不是总是为1。这就变得有意思了起来。我们注意到，题目表示在32位机器上，因此x，y，z均为32位有符号整型。因此其相加结果最多需要33位来进行储存。而double类型的64位尾数精度位53，是远大于33的，那么按理说该答案应该是总是为1。那么为何出题者会表示改为错误呢？我注意到了题目中的表示：“该机器float类型采用32位”。如果是使用float的话，那么该表达式的确可能不总是为1。32位的float浮点类型尾数精度为24，当我们将x，y, z取值为2^24(16777216) 和 1以及-16777216时，fx &#x3D; 16777216.0，fy &#x3D; 1.0，fz &#x3D; -16777216.0。<br>这时，左侧表达式fx + fy 就需要使用25位来储存，然而float只有24位，低位的1.0便会被舍入，结果仍然会是16777216.0，再加上fz时，结果便会为0；而右侧，fy + fz 结果会为-16777215.0，这是能够正确储存的，再加上fx，结果为1.0。两侧结果不相等，表达式结果为0。所以我的确是有些怀疑群主可能是犯了混搞糊涂了。。</p>
+<p>​        总结一下，如果容器为64位double时，答案应该是A，B，D不总是为1，而C应该是总是为1的。</p>
 <p>​        一道很有意思的题，对于理解计算机对于数据的存储蛮有帮助的。</p>
 
             </div>
@@ -251,7 +251,7 @@
     
     
         <a href="/wiki/%E6%88%91%E7%9A%84%E7%9C%9F%E6%AD%A3%E7%9A%84Hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">Plus ancien</strong>
+            <strong class="article-nav-caption">Older</strong>
             <div class="article-nav-title">我的真正的Hello world!</div>
         </a>
     
